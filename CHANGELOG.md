@@ -1,3 +1,7 @@
-## [0.1.0] - TODO: Add release date.
+# 0.1.1
 
-* TODO: Describe initial release.
+* Fixed a bug by removing `protected` decorator from the `ViewModel`.
+
+# 0.1.0
+
+* Package Deployment

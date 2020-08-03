@@ -10,9 +10,8 @@ class ViewModel extends ChangeNotifier {
   bool _disposed = false;
   bool get disposed => _disposed;
 
-  @protected
   void init() {}
-  @protected
+
   void build() {}
 
   /// This is only called the first time the viewmodel is initialized.
