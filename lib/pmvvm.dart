@@ -1,6 +1,7 @@
 library pmvvm;
 
-export 'hook.view.dart';
+export 'views/hook.view.dart';
+export 'views/stateless.view.dart';
 export 'mvvm-builder.widget.dart';
 export 'mvvm.widget.dart';
 export 'view-model.dart';

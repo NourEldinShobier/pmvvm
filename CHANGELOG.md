@@ -1,3 +1,7 @@
+# 0.2.0
+
+* Added `StatelessView` widget.
+
 # 0.1.2
 
 * Update dependencies `flutter_hooks`.
