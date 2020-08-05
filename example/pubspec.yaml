@@ -1,0 +1,33 @@
+name: example
+description: PMVVM package examples.
+publish_to: 'none'
+
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+
+dependencies:
+  firebase_core: ^0.4.5
+  firebase_analytics: ^5.0.16
+  firebase_auth: ^0.16.1
+  cloud_firestore: ^0.13.7
+  google_sign_in: ^4.5.1
+  pmvvm:
+    path: ../
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^0.1.3
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+
+flutter:
+
+
+  uses-material-design: true
+
