@@ -1,3 +1,7 @@
+# 0.2.1
+
+* Added examples: counter, firebase 2-factor auth.
+
 # 0.2.0
 
 * Added `StatelessView` widget.

@@ -278,10 +278,10 @@ packages:
   pmvvm:
     dependency: "direct main"
     description:
-      path: "../../pmvvm"
+      path: ".."
       relative: true
     source: path
-    version: "0.2.0"
+    version: "0.2.1"
   provider:
     dependency: transitive
     description:
