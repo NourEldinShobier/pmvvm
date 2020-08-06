@@ -1,3 +1,7 @@
+# 0.2.2
+
+* Updated README file with extra details about `StatelessView`, code snippets, ..etc.
+
 # 0.2.1
 
 * Added examples: counter, firebase 2-factor auth.
