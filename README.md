@@ -121,7 +121,7 @@ class _MyView extends StatelessView<MyViewModel> {
     );
   }
 ```
-If We want to use less boilerplate, We can use `MVVMWidget` instead of the `MVVM` builder.
+If you want to use less boilerplate, you can use `MVVMWidget` instead of the `MVVM` builder.
 ```dart
 class _MyView extends MVVMWidget<MyViewModel> {
   const _MyView({Key key}) : super(key: key);
