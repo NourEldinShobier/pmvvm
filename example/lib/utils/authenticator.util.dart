@@ -1,23 +1,15 @@
-import 'package:example/core/packages.dart';
-import 'package:example/utils/utils.module.dart';
+import 'package:example/models/models.module.dart';
 
 abstract class Authenticator {
-  static Future<bool> isSignedInAndVerified(FirebaseUser user) async {
-    if (isSignedIn(user)) {
-      if (await isVerified(user)) {
-        return Future.value(true);
-      }
+  static bool isSignedInAndVerified(Profile profile) {
+    if (isSignedIn(profile)) {
+      if (profile.verified) return true;
     }
 
-    return Future.value(false);
+    return false;
   }
 
-  static bool isSignedIn(FirebaseUser user) {
-    return user != null;
-  }
-
-  static Future<bool> isVerified(FirebaseUser user) async {
-    var profile = await UserDAO.getProfile(user);
-    return Future.value(profile.verified);
+  static bool isSignedIn(Profile profile) {
+    return profile != null;
   }
 }

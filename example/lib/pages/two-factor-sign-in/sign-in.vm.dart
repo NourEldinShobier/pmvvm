@@ -4,12 +4,12 @@ import 'dart:async';
 
 import 'package:example/core/packages.dart';
 import 'package:example/core/services/firebase.service.dart';
+import 'package:example/models/models.module.dart';
 import 'package:example/utils/utils.module.dart';
 import 'package:flutter/material.dart';
 
 class SignInPageVM extends ViewModel {
-  FirebaseUser user;
-  AuthStatus authStatus;
+  Profile profile;
 
   int timerValue = 0;
   Timer timer;
@@ -19,14 +19,13 @@ class SignInPageVM extends ViewModel {
 
   @override
   void init() {
-    user = Provider.of<FirebaseUser>(context);
-    authStatus = Provider.of<AuthStatus>(context);
+    profile = Provider.of<Profile>(context);
   }
 
   // Events
 
   Future<void> signInWithGoogle_onTap() async {
-    var u = await AuthService.googleSignIn();
+    var u = await authService.googleSignIn();
 
     if (u != null) {
       _moveToPage(1); //PHONE PAGE
@@ -34,7 +33,7 @@ class SignInPageVM extends ViewModel {
   }
 
   Future<void> sendCode_onTap() async {
-    await AuthService.verifyPhoneNumber(
+    await authService.verifyPhoneNumber(
       codeSent: _codeSent,
       phoneNumber: phoneTextField.text.trim(),
       verificationFailed: _verificationFailed,
@@ -87,12 +86,11 @@ class SignInPageVM extends ViewModel {
   void _verificationCompleted(_) {
     print('Verification Completed');
 
-    UserDAO.updateUser(user, {
+    UserDAO.updateUser(profile, {
       'phoneNumber': phoneTextField.text.trim(),
       'verified': true,
     });
 
-    AuthService.authStatusController.add(AuthStatus.DONE);
     notifyListeners();
   }
 }

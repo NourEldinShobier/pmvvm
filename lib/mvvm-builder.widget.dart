@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:provider/provider.dart';
+import 'package:pmvvm/pmvvm.dart';
 import 'view-model.dart';
 
 class MVVM<T extends ChangeNotifier> extends StatefulWidget {

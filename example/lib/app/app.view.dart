@@ -1,5 +1,4 @@
 import 'package:example/core/packages.dart';
-import 'package:example/core/services/firebase.service.dart';
 import 'package:flutter/material.dart';
 
 import 'package:example/pages/pages.module.dart';
@@ -25,7 +24,7 @@ class _MyAppView extends StatelessView<AppVM> {
   Widget render(context, app) {
     return MaterialApp(
       title: app.title,
-      home: app.authStatus != AuthStatus.DONE ? SignInPage() : CounterPage(),
+      home: app.isSignedInAndVerified ? CounterPage() : SignInPage(),
     );
   }
 }

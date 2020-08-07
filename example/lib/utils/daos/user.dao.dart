@@ -4,8 +4,8 @@ import 'package:example/models/models.module.dart';
 abstract class UserDAO {
   static var _db = Firestore.instance;
 
-  static void updateUser(FirebaseUser user, Map<String, dynamic> data) {
-    DocumentReference ref = _db.collection('users').document(user.uid);
+  static void updateUser(Profile profile, Map<String, dynamic> data) {
+    DocumentReference ref = _db.collection('users').document(profile.uid);
 
     ref.setData(data, merge: true);
   }

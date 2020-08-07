@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:pmvvm/pmvvm.dart';
 
 abstract class StatelessView<T> extends StatelessWidget {
   const StatelessView({Key key, this.reactive = true});

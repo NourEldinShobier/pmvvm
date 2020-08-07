@@ -1,24 +1,23 @@
 import 'package:example/core/packages.dart';
-import 'package:example/core/services/firebase.service.dart';
+import 'package:example/models/models.module.dart';
 import 'package:example/utils/utils.module.dart';
 
 class AppVM extends ViewModel {
-  FirebaseUser user;
-  AuthStatus authStatus;
+  Profile profile;
+  bool isSignedInAndVerified = false;
 
   var title = 'PMVVM Example';
 
   @override
   void init() {
-    user = Provider.of<FirebaseUser>(context);
-    authStatus = Provider.of<AuthStatus>(context);
+    profile = Provider.of<Profile>(context);
 
-    checkSignInOrNot();
-  }
-
-  Future<void> checkSignInOrNot() async {
-    if (await Authenticator.isSignedInAndVerified(user)) {
-      AuthService.authStatusController.add(AuthStatus.DONE);
+    if (Authenticator.isSignedInAndVerified(profile)) {
+      isSignedInAndVerified = true;
+      notifyListeners();
+    } else {
+      isSignedInAndVerified = false;
+      notifyListeners();
     }
   }
 }

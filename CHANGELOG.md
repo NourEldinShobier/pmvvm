@@ -1,3 +1,9 @@
+# 0.3.0
+
+* Added `context.fetch<T>()` which is equivalent to `Provider.of<T>(context)`
+* Updated 2 factor authentication example
+* Updated README.
+
 # 0.2.2
 
 * Updated README file with extra details about `StatelessView`, code snippets, ..etc.

@@ -1,20 +1,33 @@
-// ignore_for_file: close_sinks
-
 import 'dart:async';
 import 'package:example/core/packages.dart';
+import 'package:example/models/models.module.dart';
 
-enum AuthStatus { DONE, NOT_DONE }
+final authService = AuthService();
 
 class AuthService {
-  static final _googleSignIn = GoogleSignIn();
-  static final _auth = FirebaseAuth.instance;
-  static final _db = Firestore.instance;
+  final _googleSignIn = GoogleSignIn();
+  final _auth = FirebaseAuth.instance;
+  final _db = Firestore.instance;
 
-  static var authStatusController = StreamController<AuthStatus>();
+  Stream<Profile> _profile;
+
+  AuthService() {
+    _profile = user.switchMap((FirebaseUser u) {
+      if (u != null) {
+        return _db
+            .collection('users')
+            .document(u.uid)
+            .snapshots()
+            .map((snap) => Profile.fromMap(snap.data));
+      } else {
+        return Stream.value(null);
+      }
+    });
+  }
 
   // methods
 
-  static Future<FirebaseUser> googleSignIn() async {
+  Future<FirebaseUser> googleSignIn() async {
     try {
       var googleSignInAccount = await _googleSignIn.signIn();
 
@@ -36,7 +49,7 @@ class AuthService {
     }
   }
 
-  static Future<void> _saveUserProfile(FirebaseUser user) async {
+  Future<void> _saveUserProfile(FirebaseUser user) async {
     if (user != null) {
       var ref = _db.collection('users').document(user.uid);
 
@@ -52,7 +65,7 @@ class AuthService {
     }
   }
 
-  static Future<void> verifyPhoneNumber({
+  Future<void> verifyPhoneNumber({
     String phoneNumber,
     PhoneCodeSent codeSent,
     PhoneVerificationFailed verificationFailed,
@@ -60,21 +73,22 @@ class AuthService {
     PhoneCodeAutoRetrievalTimeout codeAutoRetrievalTimeout,
   }) async {
     await _auth.verifyPhoneNumber(
-        phoneNumber: phoneNumber,
-        timeout: Duration(minutes: 1),
-        verificationCompleted: verificationCompleted,
-        verificationFailed: verificationFailed,
-        codeSent: codeSent,
-        codeAutoRetrievalTimeout: codeAutoRetrievalTimeout);
+      phoneNumber: phoneNumber,
+      timeout: Duration(minutes: 1),
+      verificationCompleted: verificationCompleted,
+      verificationFailed: verificationFailed,
+      codeSent: codeSent,
+      codeAutoRetrievalTimeout: codeAutoRetrievalTimeout,
+    );
   }
 
-  static Future<void> signOut() {
+  Future<void> signOut() {
     return _auth.signOut();
   }
 
   // getters
 
-  static Future<FirebaseUser> get currentUser => _auth.currentUser();
-  static Stream<FirebaseUser> get user => _auth.onAuthStateChanged;
-  static Stream<AuthStatus> get authStatus => authStatusController.stream;
+  Future<FirebaseUser> get currentUser => _auth.currentUser();
+  Stream<FirebaseUser> get user => _auth.onAuthStateChanged;
+  Stream<Profile> get profile => _profile;
 }
