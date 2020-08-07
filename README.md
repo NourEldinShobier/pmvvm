@@ -146,6 +146,7 @@ class _MyView extends MVVMWidget<MyViewModel> {
 
 # Notes 🎯
 - You can call the `init` method only one time, by setting the `initOnce` of the `MVVM` builder or the `MVVMWidget` to `true`
+- You can use `context.fetch<T>()` which is equivalent to `Provider.of<T>(context)`
 - `example` project contains counter & firebase 2 factor authentication
 - For VS Code snippets, visit this [link](https://gist.github.com/NourEldinShobier/d0fd014d737ac1776f5f0daadedcc5af)
 
