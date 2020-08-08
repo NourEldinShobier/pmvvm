@@ -153,6 +153,8 @@ class _MyView extends MVVMWidget<MyViewModel> {
 
 
 # FAQ 🤔
+- Can I use it in production?
+  - Yep! It's stable and ready to rock
 - What is the difference between `Stacked` & `P.MVVM` since both adopts the same principles?
 
 | **Stacked**                                                                                                                                                               | **P.MVVM**                                                                                                                                                                                                         |
@@ -164,7 +166,6 @@ class _MyView extends MVVMWidget<MyViewModel> {
 | It has **reactive & non-reactive** constructors that force developers to use consumer in a specific position in the sub-tree.                                             | It doesn’t have such concepts, all you need is to declare the `MVVM` and consume it from anywhere in the sub-tree.                                                                                                |
 
 In summary, P.MVVM is simpler & cleaner, there is no over-wrapping, and idioms are more clear.
-
 
 
 # Dependencies 📦
