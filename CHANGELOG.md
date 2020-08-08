@@ -1,3 +1,8 @@
+# 0.4.0
+
+* Added `listen` parameter to `context.fetch<T>()`
+* Updated README.
+
 # 0.3.0
 
 * Added `context.fetch<T>()` which is equivalent to `Provider.of<T>(context)`
