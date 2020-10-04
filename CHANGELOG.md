@@ -1,3 +1,12 @@
+# 1.0.0
+
+* Removed `createNewModelOnInsert` parameters of the `MVVM` widget.
+* Removed `MVVMWidget` class.
+* Handled app lifecycle state methods inside `ViewModel`.
+* Updated Example.
+* Updated README.
+* Updated Dependencies.
+
 # 0.4.0
 
 * Added `listen` parameter to `context.fetch<T>()`

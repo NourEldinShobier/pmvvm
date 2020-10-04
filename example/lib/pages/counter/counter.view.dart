@@ -10,7 +10,7 @@ class CounterPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MVVM(
       view: (_, __) => _CounterPageView(),
-      viewModel: () => CounterPageVM(),
+      viewModel: CounterPageVM(),
     );
   }
 }

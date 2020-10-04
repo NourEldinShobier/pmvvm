@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:flutter/services.dart';
 import 'package:pmvvm/pmvvm.dart';
 import 'view-model.dart';
 
@@ -8,16 +9,13 @@ class MVVM<T extends ChangeNotifier> extends StatefulWidget {
   final Widget Function(BuildContext, T) view;
 
   /// A builder function for the viewmodel of the view.
-  final T Function() viewModel;
+  final T viewModel;
 
   /// To dispose the viewmodel when the provider is removed from the
   /// widget tree.
-  ///
+
   /// default's to [true]
   final bool disposeVM;
-
-  /// To rebuid the viewmodel everytime the widget is inserted to widget tree.
-  final bool createNewModelOnInsert;
 
   /// Init the viewmodel only once
   final bool initOnce;
@@ -26,7 +24,6 @@ class MVVM<T extends ChangeNotifier> extends StatefulWidget {
     @required this.view,
     @required this.viewModel,
     this.disposeVM = true,
-    this.createNewModelOnInsert = false,
     this.initOnce = false,
     Key key,
   }) : super(key: key);
@@ -36,56 +33,60 @@ class MVVM<T extends ChangeNotifier> extends StatefulWidget {
 }
 
 class _MVVMState<T extends ChangeNotifier> extends State<MVVM<T>> {
-  T vm;
+  T _vm;
+  bool _initialised = false;
 
   @override
   void initState() {
     super.initState();
-    // build the viewmodel if it hasn't been built yet.
-    if (vm == null) {
-      _createViewModel();
-    }
+    _vm = widget.viewModel;
 
-    // Or build a new viewmodel whenever [initState] is called.
-    else if (widget.createNewModelOnInsert) {
-      _createViewModel();
-    }
+    SystemChannels.lifecycle.setMessageHandler((msg) async {
+      if (msg == AppLifecycleState.resumed.toString()) {
+        (_vm as ViewModel).onResume();
+      } else if (msg == AppLifecycleState.inactive.toString()) {
+        (_vm as ViewModel).onInactive();
+      } else if (msg == AppLifecycleState.paused.toString()) {
+        (_vm as ViewModel).onPause();
+      } else if (msg == AppLifecycleState.detached.toString()) {
+        (_vm as ViewModel).onDetach();
+      }
+
+      return '';
+    });
   }
 
   @override
   void didChangeDependencies() {
-    (vm as ViewModel)?.context = this.context;
-
-    if (widget.initOnce && !(vm as ViewModel).initialized) {
-      (vm as ViewModel)?.init();
-      (vm as ViewModel)?.setInit = true;
-    } else if (!widget.initOnce) {
-      (vm as ViewModel)?.init();
+    super.didChangeDependencies();
+    if (identical(_vm, widget.viewModel)) {
+      _vm = widget.viewModel;
     }
 
-    super.didChangeDependencies();
-  }
+    (_vm as ViewModel)?.context = this.context;
 
-  void _createViewModel() {
-    if (widget.viewModel != null) {
-      vm = widget.viewModel();
+    if (widget.initOnce && !_initialised) {
+      (_vm as ViewModel)?.init();
+      _initialised = true;
+    } else if (!widget.initOnce) {
+      (_vm as ViewModel)?.init();
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    (vm as ViewModel)?.build();
+    (_vm as ViewModel)?.onBuild();
 
     if (!widget.disposeVM) {
       return ChangeNotifierProvider.value(
-        value: vm,
-        child: widget.view(context, vm),
+        value: _vm,
+        child: widget.view(context, _vm),
       );
     }
 
     return ChangeNotifierProvider(
-      create: (context) => vm,
-      child: widget.view(context, vm),
+      create: (context) => _vm,
+      child: widget.view(context, _vm),
     );
   }
 }

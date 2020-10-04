@@ -11,7 +11,7 @@ class SignInPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MVVM<SignInPageVM>(
       view: (_, __) => _SignInPageView(),
-      viewModel: () => SignInPageVM(),
+      viewModel: SignInPageVM(),
     );
   }
 }

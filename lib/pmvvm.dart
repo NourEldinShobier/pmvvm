@@ -6,7 +6,6 @@ export 'views/stateless.view.dart';
 export 'utils/extensions.dart';
 
 export 'mvvm-builder.widget.dart';
-export 'mvvm.widget.dart';
 export 'view-model.dart';
 
 export 'package:provider/provider.dart';

@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MVVM(
       view: (_, __) => _MyAppView(),
-      viewModel: () => AppVM(),
+      viewModel: AppVM(),
     );
   }
 }
