@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:pmvvm/pmvvm.dart';
 import 'view-model.dart';
 
-class MVVM<T extends ChangeNotifier> extends StatefulWidget {
+class MVVM<T extends ChangeNotifier?> extends StatefulWidget {
   /// A builder function for the View widget, it also has access
   /// to the viewmodel.
   final Widget Function(BuildContext, T) view;
@@ -21,19 +21,19 @@ class MVVM<T extends ChangeNotifier> extends StatefulWidget {
   final bool initOnce;
 
   const MVVM({
-    @required this.view,
-    @required this.viewModel,
+    required this.view,
+    required this.viewModel,
     this.disposeVM = true,
     this.initOnce = false,
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override
   _MVVMState<T> createState() => _MVVMState<T>();
 }
 
-class _MVVMState<T extends ChangeNotifier> extends State<MVVM<T>> {
-  T _vm;
+class _MVVMState<T extends ChangeNotifier?> extends State<MVVM<T?>> {
+  T? _vm;
   bool _initialised = false;
 
   @override
@@ -63,19 +63,19 @@ class _MVVMState<T extends ChangeNotifier> extends State<MVVM<T>> {
       _vm = widget.viewModel;
     }
 
-    (_vm as ViewModel)?.context = this.context;
+    (_vm as ViewModel?)?.context = this.context;
 
     if (widget.initOnce && !_initialised) {
-      (_vm as ViewModel)?.init();
+      (_vm as ViewModel?)?.init();
       _initialised = true;
     } else if (!widget.initOnce) {
-      (_vm as ViewModel)?.init();
+      (_vm as ViewModel?)?.init();
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    (_vm as ViewModel)?.onBuild();
+    (_vm as ViewModel?)?.onBuild();
 
     if (!widget.disposeVM) {
       return ChangeNotifierProvider.value(

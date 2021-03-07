@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class ViewModel extends ChangeNotifier {
-  BuildContext context;
+  BuildContext? context;
 
   bool _disposed = false;
   bool get disposed => _disposed;

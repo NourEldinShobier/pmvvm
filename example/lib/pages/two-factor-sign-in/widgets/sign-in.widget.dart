@@ -9,7 +9,7 @@ class SignIn extends StatelessView<SignInPageVM> {
   @override
   Widget render(context, page) {
     return Center(
-      child: RaisedButton(
+      child: ElevatedButton(
         onPressed: page.signInWithGoogle_onTap,
         child: Text('Sign in with Google'),
       ),

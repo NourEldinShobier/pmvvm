@@ -30,7 +30,7 @@ class Phone extends StatelessView<SignInPageVM> {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 32),
-              RaisedButton(
+              ElevatedButton(
                 onPressed: page.sendCode_onTap,
                 child: Text(
                   'Send Code',

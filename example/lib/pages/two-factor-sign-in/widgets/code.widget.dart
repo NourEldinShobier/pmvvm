@@ -32,7 +32,7 @@ class Code extends StatelessView<SignInPageVM> {
           Selector<SignInPageVM, int>(
             selector: (_, page) => page.timerValue,
             builder: (_, data, __) {
-              return RaisedButton(
+              return ElevatedButton(
                 onPressed: data < 1 ? page.sendCode_onTap : null,
                 child: Text(
                   'Resend Code',

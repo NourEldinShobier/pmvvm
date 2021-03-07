@@ -15,7 +15,7 @@ class Root extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        StreamProvider<Profile>.value(value: authService.profile),
+        StreamProvider<Profile>.value(value: authService.profile, initialData: null),
       ],
       child: MyApp(),
     );
