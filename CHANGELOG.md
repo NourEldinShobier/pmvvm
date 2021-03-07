@@ -1,5 +1,9 @@
 # 1.0.0
 
+* Migrate to `null-safety`
+
+# 1.0.0
+
 * Removed `createNewModelOnInsert` parameters of the `MVVM` widget.
 * Removed `MVVMWidget` class.
 * Handled app lifecycle state methods inside `ViewModel`.
