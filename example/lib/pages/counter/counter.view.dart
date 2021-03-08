@@ -1,10 +1,10 @@
-import 'package:example/core/packages.dart';
+import 'package:pmvvm/pmvvm.dart';
 import 'package:flutter/material.dart';
 
 import 'counter.vm.dart';
 
 class CounterPage extends StatelessWidget {
-  const CounterPage({Key key}) : super(key: key);
+  const CounterPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +16,7 @@ class CounterPage extends StatelessWidget {
 }
 
 class _CounterPageView extends StatelessView<CounterPageVM> {
-  const _CounterPageView({Key key}) : super(key: key);
+  const _CounterPageView({Key? key}) : super(key: key);
 
   @override
   Widget render(context, page) {

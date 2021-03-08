@@ -1,4 +1,4 @@
-import 'package:example/core/packages.dart';
+import 'package:pmvvm/pmvvm.dart';
 
 class CounterPageVM extends ViewModel {
   var title = 'Counter';
