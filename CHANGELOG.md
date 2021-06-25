@@ -1,3 +1,10 @@
+# 2.2.0
+
+* Fix minor bug with hooks.
+* Support multiple app life cycle events invocation.
+* Update documentation
+
+
 # 2.0.1
 
 * Fix `null-safety` bug

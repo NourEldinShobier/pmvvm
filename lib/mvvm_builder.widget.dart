@@ -1,9 +1,9 @@
 import 'package:flutter/widgets.dart';
-import 'package:flutter/services.dart';
 import 'package:pmvvm/pmvvm.dart';
 import 'view_model.dart';
 
-class MVVM<T extends ChangeNotifier> extends StatefulWidget {
+/// MVVM builder widget
+class MVVM<T extends ViewModel> extends StatefulWidget {
   /// A builder function for the View widget, it also has access
   /// to the viewmodel.
   final Widget Function(BuildContext, T) view;
@@ -32,7 +32,8 @@ class MVVM<T extends ChangeNotifier> extends StatefulWidget {
   _MVVMState<T> createState() => _MVVMState<T>();
 }
 
-class _MVVMState<T extends ChangeNotifier> extends State<MVVM<T>> {
+class _MVVMState<T extends ViewModel> extends State<MVVM<T>>
+    with WidgetsBindingObserver {
   late T _vm;
   bool _initialised = false;
 
@@ -41,19 +42,20 @@ class _MVVMState<T extends ChangeNotifier> extends State<MVVM<T>> {
     super.initState();
     _vm = widget.viewModel;
 
-    SystemChannels.lifecycle.setMessageHandler((msg) async {
-      if (msg == AppLifecycleState.resumed.toString()) {
-        (_vm as ViewModel).onResume();
-      } else if (msg == AppLifecycleState.inactive.toString()) {
-        (_vm as ViewModel).onInactive();
-      } else if (msg == AppLifecycleState.paused.toString()) {
-        (_vm as ViewModel).onPause();
-      } else if (msg == AppLifecycleState.detached.toString()) {
-        (_vm as ViewModel).onDetach();
-      }
+    WidgetsBinding.instance?.addObserver(this);
+  }
 
-      return '';
-    });
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _vm.onResume();
+    } else if (state == AppLifecycleState.inactive) {
+      _vm.onInactive();
+    } else if (state == AppLifecycleState.paused) {
+      _vm.onPause();
+    } else if (state == AppLifecycleState.detached) {
+      _vm.onDetach();
+    }
   }
 
   @override
@@ -63,19 +65,26 @@ class _MVVMState<T extends ChangeNotifier> extends State<MVVM<T>> {
       _vm = widget.viewModel;
     }
 
-    (_vm as ViewModel).context = this.context;
+    _vm.context = context;
 
     if (widget.initOnce && !_initialised) {
-      (_vm as ViewModel).init();
+      _vm.init();
       _initialised = true;
     } else if (!widget.initOnce) {
-      (_vm as ViewModel).init();
+      _vm.init();
     }
   }
 
   @override
+  void dispose() {
+    WidgetsBinding.instance?.removeObserver(this);
+    _vm.onDispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    (_vm as ViewModel).onBuild();
+    _vm.onBuild();
 
     if (!widget.disposeVM) {
       return ChangeNotifierProvider.value(
