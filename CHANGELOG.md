@@ -1,14 +1,20 @@
+# 2.2.2
+
+* Fixd typos in the README and updated the documentation structure.
+* Update the code documentation.
+* Update the package dependencies.
+
 # 2.2.0
 
 * Fix minor bug with hooks.
 * Support multiple app life cycle events invocation.
 * Update documentation
 
-
 # 2.0.1
 
 * Fix `null-safety` bug
 * Update example code.
+
 # 2.0.0
 
 * Migrate to `null-safety`

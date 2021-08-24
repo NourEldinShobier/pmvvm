@@ -2,22 +2,23 @@ import 'package:flutter/widgets.dart';
 import 'package:pmvvm/pmvvm.dart';
 import 'view_model.dart';
 
-/// MVVM builder widget
+/// the MVVM builder widget.
 class MVVM<T extends ViewModel> extends StatefulWidget {
   /// A builder function for the View widget, it also has access
-  /// to the viewmodel.
+  /// to the view model.
   final Widget Function(BuildContext, T) view;
 
-  /// A builder function for the viewmodel of the view.
+  /// The view model of the view.
   final T viewModel;
 
-  /// To dispose the viewmodel when the provider is removed from the
+  /// To dispose the view model when the provider is removed from the
   /// widget tree.
 
   /// default's to [true]
   final bool disposeVM;
 
-  /// Init the viewmodel only once
+  /// Whether the [viewModel] should be initialized once or every time the
+  /// widget's dependencies are updated.
   final bool initOnce;
 
   const MVVM({
@@ -32,8 +33,7 @@ class MVVM<T extends ViewModel> extends StatefulWidget {
   _MVVMState<T> createState() => _MVVMState<T>();
 }
 
-class _MVVMState<T extends ViewModel> extends State<MVVM<T>>
-    with WidgetsBindingObserver {
+class _MVVMState<T extends ViewModel> extends State<MVVM<T>> with WidgetsBindingObserver {
   late T _vm;
   bool _initialised = false;
 

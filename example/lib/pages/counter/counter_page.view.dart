@@ -1,7 +1,7 @@
 import 'package:pmvvm/pmvvm.dart';
 import 'package:flutter/material.dart';
 
-import 'counter.vm.dart';
+import 'counter_page.vm.dart';
 
 class CounterPage extends StatelessWidget {
   const CounterPage({Key? key}) : super(key: key);
