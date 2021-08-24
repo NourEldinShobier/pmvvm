@@ -2,7 +2,7 @@
   <img height="400" src="https://i.imgur.com/5Ve6Sxi.png">
 </p>
 
-PMVVM is a Flutter package for simple and scalable state management based on the MVVM pattern, it uses Provider & Hooks under the hood. PMVVM serves the same purpose as Redux, but unlike Redux it doesn’t require too much boilerplate.
+PMVVM is a Flutter package for simple and scalable state management based on the MVVM pattern, it uses Provider & Hooks under the hood. PMVVM serves the same purpose BloC, but unlike BloC it doesn’t require too much boilerplate.
 
 It's worth mentioning that the package adopts some concepts from the Stacked package, but with a much simpler and cleaner approach.
 
@@ -24,7 +24,7 @@ The view model is platform-independent and doesn't know its view. Therefore, it 
 
 Holds app data and the business logic. It consists of the business logic (e.g. local and remote data sources, model classes, and repositories). They’re usually simple classes.
 
-### **When should you use PMVVM?** 👌
+**When should you use PMVVM?** 👌
 
 To keep it simple, use it whenever your widget has its own events that can mutate the state directly e.g: pages, posts, ...etc.
 
@@ -131,13 +131,13 @@ class _MyView extends HookView<MyViewModel> {
 
 # More about PMVVM🎯
 
-- The `init` lifecycle method is called by default every time the view dependencies are updated. To init the `ViewModel` only once and ignore dependencies updates, set `initOnce` of the `MVVM` builder to `true`.
+- The `init` lifecycle method is called by default every time the view model dependencies are updated. To init the `ViewModel` only once and ignore dependencies updates, set `initOnce` of the `MVVM` builder to `true`.
 - You can use `context.fetch<T>(listen: true/false)` which is equivalent to `Provider.of<T>(context)`
 - To make the view ignore the state notifications from the `ViewModel` , set `reactive` to `false` when you are constructing the `StatelessView` or `HookView` :
 
 ```dart
 class _MyView extends StatelessView<MyViewModel> {
-  const _MyView({Key key}) : super(key: key, reactive: false
+  const _MyView({Key key}) : super(key: key, reactive: false);
   ....
 }
 ```
@@ -253,8 +253,8 @@ class MyWidget extends StatelessWidget {
 | **Stacked**                                                                                                                                                               | **PMVVM**                                                                                                                                                                                                        |
 | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | You can't access the `BuildContext` from the `ViewModel`.                                                                                                                 | `BuildContext` can be accessed inside the `ViewModel` using:<br />- `Provider.of<T>(context)` <br />- `context.watch<T>()` <br />- `context.read<T>()` <br />- `context.select<T, R>(R cb(T value))`             |
-| You should implement the `Initialisable` interface to call `initialise`.                                                                                                  | `init` event is called by default, all you need to do is to override it **(optional)**.                                                                                                                          |
-| There is no `build` method in the `ViewModel`.                                                                                                                            | `onBuild` method is called by default every time the `View` is rebuilt, and you can override it to implement yours **(optional)**.                                                                               |
+| You should implement the `Initialisable` interface to call `initialise`.                                                                                                  | `init` event is called by default, all you need to do is to override it (optional).                                                                                                                              |
+| There is no `build` method in the `ViewModel`.                                                                                                                            | `onBuild` method is called by default every time the `View` is rebuilt, and you can override it to implement yours (optional).                                                                                   |
 | It over-wraps `provider` with many `ViewModels` like `FutureViewModel`, `StreamViewModel`, …etc. Which `provider` & `flutter_hooks` are built to do without any wrapping. | It doesn’t over-wrap `provider` package with such classes. Instead, you can use `StreamProvider/FutureProvider` or `Hooks` which gives you the flexibility to make the most out of `provider` & `flutter_hooks`. |
 | It has **reactive & non-reactive** constructors that force developers to use consumers in a specific position in the sub-tree.                                            | It doesn’t have such concepts, all you need is to declare the `MVVM` and consume it from anywhere in the sub-tree.                                                                                               |
 

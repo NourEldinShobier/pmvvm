@@ -5,16 +5,16 @@ import 'view_model.dart';
 /// the MVVM builder widget.
 class MVVM<T extends ViewModel> extends StatefulWidget {
   /// A builder function for the View widget, it also has access
-  /// to the view model.
+  /// to the [viewModel].
   final Widget Function(BuildContext, T) view;
 
   /// The view model of the view.
   final T viewModel;
 
-  /// To dispose the view model when the provider is removed from the
+  /// To dispose the [viewModel] when the provider is removed from the
   /// widget tree.
 
-  /// default's to [true]
+  /// default's to `true`
   final bool disposeVM;
 
   /// Whether the [viewModel] should be initialized once or every time the

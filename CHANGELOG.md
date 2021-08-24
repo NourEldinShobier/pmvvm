@@ -1,3 +1,8 @@
+# 2.2.3
+
+* Fixd typos in the README.
+* Update the code documentation.
+
 # 2.2.2
 
 * Fixd typos in the README and updated the documentation structure.
