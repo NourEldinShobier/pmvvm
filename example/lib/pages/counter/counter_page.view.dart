@@ -26,7 +26,6 @@ class _CounterPageView extends StatelessView<CounterPageVM> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text('You have pushed the button this many times:'),
             // If you don't want the viewModel to refresh the whole page, you
             // can set super(key: key, reactive: false) and use the Selector
 
