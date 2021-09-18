@@ -1,3 +1,7 @@
+# 2.3.0
+
+* Added the `implicitView` parameter to the MVVM builder to allow using explicit reactive views instead of predifined views classes.
+
 # 2.2.3
 
 * Fixd typos in the README.

@@ -2,7 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:pmvvm/pmvvm.dart';
 import 'view_model.dart';
 
-/// the MVVM builder widget.
+/// The MVVM builder widget.
 class MVVM<T extends ViewModel> extends StatefulWidget {
   /// A builder function for the View widget, it also has access
   /// to the [viewModel].
@@ -13,19 +13,26 @@ class MVVM<T extends ViewModel> extends StatefulWidget {
 
   /// To dispose the [viewModel] when the provider is removed from the
   /// widget tree.
-
-  /// default's to `true`
   final bool disposeVM;
 
   /// Whether the [viewModel] should be initialized once or every time the
-  /// widget's dependencies are updated.
+  /// the dependencies change.
   final bool initOnce;
+
+  /// Whether the [view] builder is returning a predefined widget
+  /// class - implicit view - (e.g. [StatelessView], [HookView], [StatefulWidget],
+  /// and [StatelessWidget]) or returning a dynamic widget.
+  ///
+  /// When the [implicitView] is `true`, then the view widget is wrapped with
+  /// a [Consumer] widget to make it reactive to the view model changes.
+  final bool implicitView;
 
   const MVVM({
     Key? key,
     required this.view,
     required this.viewModel,
     this.disposeVM = true,
+    this.implicitView = true,
     this.initOnce = false,
   }) : super(key: key);
 
@@ -86,16 +93,28 @@ class _MVVMState<T extends ViewModel> extends State<MVVM<T>> with WidgetsBinding
   Widget build(BuildContext context) {
     _vm.onBuild();
 
+    if (widget.implicitView) {
+      if (!widget.disposeVM) {
+        return ChangeNotifierProvider<T>.value(value: _vm, child: widget.view(context, _vm));
+      }
+
+      return ChangeNotifierProvider<T>(create: (_) => _vm, child: widget.view(context, _vm));
+    }
+
     if (!widget.disposeVM) {
-      return ChangeNotifierProvider.value(
+      return ChangeNotifierProvider<T>.value(
         value: _vm,
-        child: widget.view(context, _vm),
+        child: Consumer<T>(
+          builder: (context, vm, _) => widget.view(context, vm),
+        ),
       );
     }
 
-    return ChangeNotifierProvider(
-      create: (context) => _vm,
-      child: widget.view(context, _vm),
+    return ChangeNotifierProvider<T>(
+      create: (_) => _vm,
+      child: Consumer<T>(
+        builder: (context, vm, _) => widget.view(context, vm),
+      ),
     );
   }
 }

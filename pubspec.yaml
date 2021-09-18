@@ -1,6 +1,6 @@
 name: pmvvm
 description: A clean & simple MVVM solution for state management using Provider package.
-version: 2.2.3
+version: 2.3.0
 homepage: https://github.com/NourEldinShobier/pmvvm
 
 environment:
