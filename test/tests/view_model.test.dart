@@ -12,12 +12,7 @@ void main() {
         // ARRANGE
         final vm = BaseVm();
 
-        await tester.pumpWidget(
-          MVVM(
-            viewModel: vm,
-            view: (_, __) => ReactiveView(),
-          ),
-        );
+        await tester.pumpWidget(MVVM(viewModel: vm, view: () => ReactiveView()));
 
         // ACT
         vm.increase();
@@ -39,7 +34,7 @@ void main() {
             value: notifier,
             child: MVVM(
               viewModel: vm,
-              view: (_, __) => DependentVmView(),
+              view: () => DependentVmView(),
               initOnce: true,
             ),
           ),
@@ -53,7 +48,8 @@ void main() {
         expect(find.text('0'), findsOneWidget);
       });
 
-      testWidgets('When initOnce is false Then ViewModel init method will be called when dependencies change', (tester) async {
+      testWidgets('When initOnce is false Then ViewModel init method will be called when dependencies change',
+          (tester) async {
         // ARRANGE
         final vm = DependentVm();
         final notifier = ValueNotifier<int>(0);
@@ -61,10 +57,7 @@ void main() {
         await tester.pumpWidget(
           ChangeNotifierProvider.value(
             value: notifier,
-            child: MVVM(
-              viewModel: vm,
-              view: (_, __) => DependentVmView(),
-            ),
+            child: MVVM(viewModel: vm, view: () => DependentVmView()),
           ),
         );
 

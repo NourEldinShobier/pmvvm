@@ -1,40 +1,39 @@
 import 'package:flutter/widgets.dart';
 import 'package:pmvvm/pmvvm.dart';
-import 'view_model.dart';
+
+import 'mvvm_builder.props.dart';
 
 /// The MVVM builder widget.
 class MVVM<T extends ViewModel> extends StatefulWidget {
-  /// A builder function for the View widget, it also has access
-  /// to the [viewModel].
-  final Widget Function(BuildContext, T) view;
+  final MVVMBaseProps<T> props;
 
-  /// The view model of the view.
-  final T viewModel;
-
-  /// To dispose the [viewModel] when the provider is removed from the
-  /// widget tree.
-  final bool disposeVM;
-
-  /// Whether the [viewModel] should be initialized once or every time the
-  /// the dependencies change.
-  final bool initOnce;
-
-  /// Whether the [view] builder is returning a predefined widget
-  /// class - implicit view - (e.g. [StatelessView], [HookView], [StatefulWidget],
-  /// and [StatelessWidget]) or returning a dynamic widget.
-  ///
-  /// When the [implicitView] is `true`, then the view widget is wrapped with
-  /// a [Consumer] widget to make it reactive to the view model changes.
-  final bool implicitView;
-
-  const MVVM({
+  MVVM({
     Key? key,
-    required this.view,
-    required this.viewModel,
-    this.disposeVM = true,
-    this.implicitView = true,
-    this.initOnce = false,
-  }) : super(key: key);
+    required Widget Function() view,
+    required T viewModel,
+    bool disposeVM = true,
+    bool initOnce = false,
+  })  : props = MVVMProps(
+          view: view,
+          viewModel: viewModel,
+          disposeVM: disposeVM,
+          initOnce: initOnce,
+        ),
+        super(key: key);
+
+  MVVM.builder({
+    Key? key,
+    required Widget Function(BuildContext, T) viewBuilder,
+    required T viewModel,
+    bool disposeVM = true,
+    bool initOnce = false,
+  })  : props = MVVMBuilderProps(
+          viewBuilder: viewBuilder,
+          viewModel: viewModel,
+          disposeVM: disposeVM,
+          initOnce: initOnce,
+        ),
+        super(key: key);
 
   @override
   _MVVMState<T> createState() => _MVVMState<T>();
@@ -47,7 +46,7 @@ class _MVVMState<T extends ViewModel> extends State<MVVM<T>> with WidgetsBinding
   @override
   void initState() {
     super.initState();
-    _vm = widget.viewModel;
+    _vm = widget.props.viewModel;
 
     WidgetsBinding.instance?.addObserver(this);
   }
@@ -68,16 +67,16 @@ class _MVVMState<T extends ViewModel> extends State<MVVM<T>> with WidgetsBinding
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if (identical(_vm, widget.viewModel)) {
-      _vm = widget.viewModel;
+    if (identical(_vm, widget.props.viewModel)) {
+      _vm = widget.props.viewModel;
     }
 
     _vm.context = context;
 
-    if (widget.initOnce && !_initialised) {
+    if (widget.props.initOnce && !_initialised) {
       _vm.init();
       _initialised = true;
-    } else if (!widget.initOnce) {
+    } else if (!widget.props.initOnce) {
       _vm.init();
     }
   }
@@ -93,19 +92,23 @@ class _MVVMState<T extends ViewModel> extends State<MVVM<T>> with WidgetsBinding
   Widget build(BuildContext context) {
     _vm.onBuild();
 
-    if (widget.implicitView) {
-      if (!widget.disposeVM) {
-        return ChangeNotifierProvider<T>.value(value: _vm, child: widget.view(context, _vm));
+    if (widget.props is MVVMProps) {
+      final props = widget.props as MVVMProps<T>;
+
+      if (!widget.props.disposeVM) {
+        return ChangeNotifierProvider<T>.value(value: _vm, child: props.view());
       }
 
-      return ChangeNotifierProvider<T>(create: (_) => _vm, child: widget.view(context, _vm));
+      return ChangeNotifierProvider<T>(create: (_) => _vm, child: props.view());
     }
 
-    if (!widget.disposeVM) {
+    final props = widget.props as MVVMBuilderProps<T>;
+
+    if (!widget.props.disposeVM) {
       return ChangeNotifierProvider<T>.value(
         value: _vm,
         child: Consumer<T>(
-          builder: (context, vm, _) => widget.view(context, vm),
+          builder: (context, vm, _) => props.viewBuilder(context, vm),
         ),
       );
     }
@@ -113,7 +116,7 @@ class _MVVMState<T extends ViewModel> extends State<MVVM<T>> with WidgetsBinding
     return ChangeNotifierProvider<T>(
       create: (_) => _vm,
       child: Consumer<T>(
-        builder: (context, vm, _) => widget.view(context, vm),
+        builder: (context, vm, _) => props.viewBuilder(context, vm),
       ),
     );
   }
