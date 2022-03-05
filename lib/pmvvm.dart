@@ -3,8 +3,9 @@ library pmvvm;
 export 'package:flutter_hooks/flutter_hooks.dart';
 export 'package:provider/provider.dart' hide Dispose;
 
+export 'pmvvm.config.dart';
 export 'mvvm_builder.widget.dart';
-export 'utils/extensions.dart';
 export 'view_model.dart';
-export 'views/hook.view.dart';
-export 'views/stateless.view.dart';
+export 'extensions/index.dart';
+export 'views/index.dart';
+export 'models/index.dart';
