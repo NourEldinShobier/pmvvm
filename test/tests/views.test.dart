@@ -11,12 +11,7 @@ void main() {
         // ARRANGE
         final vm = BaseVm();
 
-        await tester.pumpWidget(
-          MVVM(
-            viewModel: vm,
-            view: (_, __) => NonReactiveView(),
-          ),
-        );
+        await tester.pumpWidget(MVVM(viewModel: vm, view: () => NonReactiveView()));
 
         // ACT
         vm.increase();
@@ -30,12 +25,7 @@ void main() {
         // ARRANGE
         final vm = BaseVm();
 
-        await tester.pumpWidget(
-          MVVM(
-            viewModel: vm,
-            view: (_, __) => ReactiveView(),
-          ),
-        );
+        await tester.pumpWidget(MVVM(viewModel: vm, view: () => ReactiveView()));
 
         // ACT
         vm.increase();

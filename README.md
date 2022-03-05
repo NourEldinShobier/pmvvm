@@ -77,7 +77,7 @@ class MyWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MVVM<MyViewModel>(
-      view: (context, vmodel) => _MyView(),
+      view: () => _MyView(),
       viewModel: MyViewModel(),
     );
   }
@@ -129,51 +129,98 @@ class _MyView extends HookView<MyViewModel> {
 }
 ```
 
-# More about PMVVM🎯
-
-- The `init` lifecycle method is called by default every time the view model dependencies are updated. To init the `ViewModel` only once and ignore dependencies updates, set `initOnce` of the `MVVM` builder to `true`.
-- You can use `context.fetch<T>(listen: true/false)` which is equivalent to `Provider.of<T>(context)`
-- To make the view ignore the state notifications from the `ViewModel` , set `reactive` to `false` when you are constructing the `StatelessView` or `HookView` :
+If your view is simple, you can use the `MVVVM.builder` instead:
 
 ```dart
-class _MyView extends StatelessView<MyViewModel> {
-  const _MyView({Key key}) : super(key: key, reactive: false);
-  ....
+class MyWidget extends StatelessWidget {
+  const MyWidget({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MVVM<MyViewModel>.builder(
+      viewModel: viewModel,
+      viewBuilder: (_, vm) {
+        return Text(
+          vm.counter.toString(),
+          textDirection: TextDirection.ltr,
+        );
+      },
+    );
+  }
+}
+```
+# Advanced 🚀
+
+## Immutability & Observability 🧐
+PMVVM supports immutability as well, it also allows you to observe the changes/actions applied to the variables through the `Observable` class.
+
+- First wrap your variable with the `Observable`:
+```dart
+/// 'MyCounter' is an alias for the variable, this comes handy in logging
+final counter = Observable<int>('MyCounter');
+
+// Or
+
+final counter = Observable.initialized(0, 'MyCounter');
+final counter = 0.observable('MyCounter');
+```
+
+- Then apply actions to it:
+
+```dart
+counter.setValue(counter.value + 1, action: 'INCREASE');
+```
+
+- Lastly, start consuming this observable:
+
+```dart
+/// NOTE: make sure that it's initialized before using the [value] getter
+/// by checking [counter.hasValue] or just use [counter.valueOrNull] or [counter.valueOrDefault]
+
+counter.value;
+
+counter.stream.listen((value) { });   
+```
+
+
+You can also make the view model `observe`, `unobserve` to any list of observables, or clear `clearAllObservers`
+
+```dart
+class CounterPageVM extends ViewModel {
+  final counter = 0.reactive('MyCounter');
+
+  @override
+  void init() {
+    observe([counter]);
+  }
+
+  void increase() {
+    counter.setValue(counter.value + 1, action: 'INCREASE');
+  }
 }
 ```
 
-- `ViewModel` Lifecycle methods **(All of them are optional)**
+**Note 📌**
 
-```dart
-  /// - Event callback after [ViewModel] is constructed.
-  /// - The event is called by default every time the [ViewModel] view dependencies are updated.
-  /// - Set [initOnce] of the [MVVM] as [true] to ignore dependencies updates.
-  void init() {}
+The `observe` method has an optional boolean parameter `reset` that clears all the previous observers before listening to the new observables.
 
-  /// Event callback when the [build] method is called.
-  void onBuild() {}
+### Observable API
 
-  /// Event callback when the view disposed.
-  void onDispose() {}
+| Getter / Method    | Description                                                                |
+| ------------------ | -------------------------------------------------------------------------- |
+| `value`            | Returns the current value of the observable                                |
+| `valueOrNull`      | Returns the current value or null if it's not initialized                  |
+| `prevValue`        | Returns the previous value from `history` if it exists                     |
+| `hasValue`         | Checks whether the observable is initialized or not                        |
+| `history`          | Returns a history of all actions applied to the observable                 |
+| `stream`           | Returns a stream for the observable values                                 |
+| `valueOrDefault`   | A method that returns the current value or default if it's not initialized |
+| `setValue`         | A method to change the current value of the observable                     |
+| `log`              | A method that allows changing the shape of the logs                        |
+| `clearHistory`     | Remove all stored actions                                                  |
+| `resetLogCallback` | To clear the custom log functions.                                         |
 
-  /// Event callback when the application is visible and responding to user input.
-  void onResume() {}
-
-  /// Event callback when the application is not currently visible to the user, not responding to
-  /// user input, and running in the background.
-  void onPause() {}
-
-  /// - Event callback when the application is in an inactive state and is not receiving user input.
-  /// - For [IOS] only.
-  void onInactive() {}
-
-  /// - Event callback when the application is still hosted on a flutter engine but
-  ///   is detached from any host views.
-  /// - For [Android] only.
-  void onDetach() {}
-```
-
-# Patterns 🧩
+## Patterns 🧩
 
 In this section Let's discuss some patterns that can help your view model to access your widget properties:
 
@@ -188,7 +235,7 @@ class MyWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MVVM<MyViewModel>(
-      view: (context, vmodel) => _MyView(),
+      view: () => _MyView(),
       viewModel: MyViewModel()..varName = varName,
     );
   }
@@ -236,12 +283,57 @@ class MyWidget extends StatelessWidget {
     return Provider.value(
       value: props,
       child: MVVM<MyWidgetVM>(
-        view: (_, __) => _MyWidgetView(),
+        view: () => _MyWidgetView(),
         viewModel: MyWidgetVM(),
       ),
     );
   }
 }
+```
+
+# More about PMVVM🎯
+
+- The `init` lifecycle method is called by default every time the view model dependencies are updated. To init the `ViewModel` only once and ignore dependencies updates, set `initOnce` of the `MVVM` widget to `true`.
+- You can use `context.fetch<T>(listen: true/false)` which is equivalent to `Provider.of<T>(context)`
+- You can use the `PMVVMConfig` to control `enableLogging` and `trackObservablesHistory`. If `trackObservablesHistory` is false, the observables won't store the history of the actions applied to them.
+- To make the view ignore the state notifications from the `ViewModel` , set `reactive` to `false` when you are constructing the `StatelessView` or `HookView` :
+
+```dart
+class _MyView extends StatelessView<MyViewModel> {
+  const _MyView({Key key}) : super(key: key, reactive: false);
+  ....
+}
+```
+
+- `ViewModel` Lifecycle methods **(All of them are optional)**
+
+```dart
+  /// - Event callback after [ViewModel] is constructed.
+  /// - The event is called by default every time the [ViewModel] view dependencies are updated.
+  /// - Set [initOnce] of the [MVVM] as [true] to ignore dependencies updates.
+  void init() {}
+
+  /// Event callback when the [build] method is called.
+  void onBuild() {}
+
+  /// Event callback when the view disposed.
+  void onDispose() {}
+
+  /// Event callback when the application is visible and responding to user input.
+  void onResume() {}
+
+  /// Event callback when the application is not currently visible to the user, not responding to
+  /// user input, and running in the background.
+  void onPause() {}
+
+  /// - Event callback when the application is in an inactive state and is not receiving user input.
+  /// - For [IOS] only.
+  void onInactive() {}
+
+  /// - Event callback when the application is still hosted on a flutter engine but
+  ///   is detached from any host views.
+  /// - For [Android] only.
+  void onDetach() {}
 ```
 
 # FAQ 🤔
@@ -263,5 +355,6 @@ In summary, PMVVM is simpler & cleaner, there is no over-wrapping, and idioms ar
 
 - `provider`
 - `flutter_hooks`
+- `tint`
 
 <h3 align='center'>Made with :heart:</h3>

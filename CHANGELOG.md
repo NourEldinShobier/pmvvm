@@ -1,3 +1,8 @@
+# 3.0.0
+
+* Replace the `implicitView` parameter with the `builder` factory constructor.
+* Add observables
+
 # 2.3.0
 
 * Added the `implicitView` parameter to the MVVM builder to allow using explicit reactive views instead of predifined views classes.

@@ -1,9 +1,14 @@
-import 'package:flutter/foundation.dart';
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+
+import 'models/index.dart';
 
 class ViewModel extends ChangeNotifier {
   /// The context of the view.
   late BuildContext context;
+
+  final _observablesSubcriptions = Map<Observable, StreamSubscription>();
 
   bool _disposed = false;
   bool get disposed => _disposed;
@@ -39,6 +44,41 @@ class ViewModel extends ChangeNotifier {
   /// - For `Android` only.
   void onDetach() {}
 
+  /// Listen to observables changes and call [notifyListeners] when a new value
+  /// is added to the stream.
+  ///
+  /// @param [reset] - whether to reset all the existing observables' listeners
+  /// before adding the new ones.
+  void observe(List<Observable> observables, {bool reset = true}) {
+    if (reset) clearAllObservers();
+
+    observables.forEach((observable) {
+      final subscription = observable.stream.listen((_) => notifyListeners());
+
+      _observablesSubcriptions[observable] = subscription;
+    });
+  }
+
+  /// Stop listening to specific observables
+  void unobserve(List<Observable> observables) {
+    observables.forEach((observable) {
+      final subscription = _observablesSubcriptions[observable];
+
+      subscription?.cancel();
+
+      _observablesSubcriptions.remove(observable);
+    });
+  }
+
+  /// Stop listening to all observables
+  void clearAllObservers() {
+    _observablesSubcriptions.forEach((_, subscription) {
+      subscription.cancel();
+    });
+
+    _observablesSubcriptions.clear();
+  }
+
   @override
   void notifyListeners() {
     if (!disposed) {
@@ -49,6 +89,7 @@ class ViewModel extends ChangeNotifier {
   @override
   void dispose() {
     _disposed = true;
+    clearAllObservers();
     super.dispose();
   }
 }
