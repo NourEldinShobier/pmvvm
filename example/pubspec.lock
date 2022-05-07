@@ -68,7 +68,7 @@ packages:
       name: flutter_hooks
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.18.2+1"
+    version: "0.18.3"
   flutter_lints:
     dependency: "direct dev"
     description:
@@ -129,7 +129,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "3.0.0"
+    version: "4.0.0"
   provider:
     dependency: transitive
     description:

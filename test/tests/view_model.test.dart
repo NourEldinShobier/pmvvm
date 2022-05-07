@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pmvvm/pmvvm.dart';
 
@@ -16,53 +15,6 @@ void main() {
 
         // ACT
         vm.increase();
-        await tester.pump();
-
-        // ASSERT
-        expect(find.text('1'), findsOneWidget);
-      });
-    });
-
-    group('initOnce functionality tests -', () {
-      testWidgets('When initOnce is true Then ViewModel init method will be called once', (tester) async {
-        // ARRANGE
-        final vm = DependentVm();
-        final notifier = ValueNotifier<int>(0);
-
-        await tester.pumpWidget(
-          ChangeNotifierProvider.value(
-            value: notifier,
-            child: MVVM(
-              viewModel: vm,
-              view: () => DependentVmView(),
-              initOnce: true,
-            ),
-          ),
-        );
-
-        // ACT
-        notifier.value++;
-        await tester.pump();
-
-        // ASSERT
-        expect(find.text('0'), findsOneWidget);
-      });
-
-      testWidgets('When initOnce is false Then ViewModel init method will be called when dependencies change',
-          (tester) async {
-        // ARRANGE
-        final vm = DependentVm();
-        final notifier = ValueNotifier<int>(0);
-
-        await tester.pumpWidget(
-          ChangeNotifierProvider.value(
-            value: notifier,
-            child: MVVM(viewModel: vm, view: () => DependentVmView()),
-          ),
-        );
-
-        // ACT
-        notifier.value++;
         await tester.pump();
 
         // ASSERT

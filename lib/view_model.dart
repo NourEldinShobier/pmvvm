@@ -13,18 +13,28 @@ class ViewModel extends ChangeNotifier {
   bool _disposed = false;
   bool get disposed => _disposed;
 
-  /// - A callback after [ViewModel] is constructed.
-  /// - The event is called by default every time the
-  ///   [ViewModel] view dependencies are updated.
-  /// - Set `initOnce` of the `MVVM` builder to `true` to ignore
-  ///   dependencies updates.
+  /// A callback after the MVVM widget's initState is called.
+  ///
+  /// See also:
+  ///
+  ///  * [onDependenciesChange], which is called when the MVVM widget's [didChangeDependencies]
+  ///    is called.
   void init() {}
 
-  /// A callback when the `build` method is called.
+  /// A callback when the MVVM widget's [didChangeDependencies] is called.
+  ///
+  /// For example, when `context.fetch<T>(listen: true/false)` is used within the view model,
+  /// then the [onDependenciesChange] method will be called every time these dependencies change.
+  void onDependenciesChange() {}
+
+  /// A callback when the `build` method of the view is called.
   void onBuild() {}
 
-  /// A callback when the view disposed.
-  void onDispose() {}
+  /// A callback when the view is mounted.
+  void onMount() {}
+
+  /// A callback when the view is unmounted
+  void onUnmount() {}
 
   /// A callback when the application is visible and responding
   /// to user input.
@@ -34,14 +44,16 @@ class ViewModel extends ChangeNotifier {
   /// the user, not responding to user input, and running in the background.
   void onPause() {}
 
-  /// - A callback when the application is in an
-  ///   inactive state and is not receiving user input.
-  /// - For `IOS` only.
+  /// A callback when the application is in an inactive state
+  /// and is not receiving user input.
+  ///
+  /// For `IOS` only.
   void onInactive() {}
 
-  /// - A callback when the application is still hosted
-  ///   on a flutter engine but is detached from any host views.
-  /// - For `Android` only.
+  /// A callback when the application is still hosted on a flutter engine
+  /// but is detached from any host views.
+  ///
+  /// For `Android` only.
   void onDetach() {}
 
   /// Listen to observables changes and call [notifyListeners] when a new value

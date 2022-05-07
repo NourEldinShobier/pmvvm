@@ -41,13 +41,13 @@ class MyViewModel extends ViewModel {
   // Optional
   @override
   void init() {
-    // It's called after the ViewModel is constructed
+    // It's called after the MVVM widget's initState is called
   }
 
   // Optional
   @override
   void onBuild() {
-    // It's called everytime the view is rebuilt
+    // A callback when the `build` method of the view is called.
   }
 
   void increase() {
@@ -293,7 +293,6 @@ class MyWidget extends StatelessWidget {
 
 # More about PMVVM🎯
 
-- The `init` lifecycle method is called by default every time the view model dependencies are updated. To init the `ViewModel` only once and ignore dependencies updates, set `initOnce` of the `MVVM` widget to `true`.
 - You can use `context.fetch<T>(listen: true/false)` which is equivalent to `Provider.of<T>(context)`
 - You can use the `PMVVMConfig` to control `enableLogging` and `trackObservablesHistory`. If `trackObservablesHistory` is false, the observables won't store the history of the actions applied to them.
 - To make the view ignore the state notifications from the `ViewModel` , set `reactive` to `false` when you are constructing the `StatelessView` or `HookView` :
@@ -308,16 +307,28 @@ class _MyView extends StatelessView<MyViewModel> {
 - `ViewModel` Lifecycle methods **(All of them are optional)**
 
 ```dart
-  /// - Event callback after [ViewModel] is constructed.
-  /// - The event is called by default every time the [ViewModel] view dependencies are updated.
-  /// - Set [initOnce] of the [MVVM] as [true] to ignore dependencies updates.
+  /// A callback after the MVVM widget's initState is called.
+  ///
+  /// See also:
+  ///
+  ///  * [onDependenciesChange], which is called when the MVVM widget's [didChangeDependencies]
+  ///    is called.
   void init() {}
 
-  /// Event callback when the [build] method is called.
+  /// A callback when the MVVM widget's [didChangeDependencies] is called.
+  ///
+  /// For example, when `context.fetch<T>(listen: true/false)` is used within the view model,
+  /// then the [onDependenciesChange] method will be called every time these dependencies change.
+  void onDependenciesChange() {}
+
+  /// A callback when the `build` method of the view is called.
   void onBuild() {}
 
-  /// Event callback when the view disposed.
-  void onDispose() {}
+  /// A callback when the view is mounted.
+  void onMount() {}
+
+  /// A callback when the view is unmounted
+  void onUnmount() {}
 
   /// Event callback when the application is visible and responding to user input.
   void onResume() {}
@@ -326,13 +337,15 @@ class _MyView extends StatelessView<MyViewModel> {
   /// user input, and running in the background.
   void onPause() {}
 
-  /// - Event callback when the application is in an inactive state and is not receiving user input.
-  /// - For [IOS] only.
+  /// Event callback when the application is in an inactive state and is not receiving user input.
+  /// 
+  /// For [IOS] only.
   void onInactive() {}
 
-  /// - Event callback when the application is still hosted on a flutter engine but
-  ///   is detached from any host views.
-  /// - For [Android] only.
+  /// Event callback when the application is still hosted on a flutter engine but
+  /// is detached from any host views.
+  ///
+  /// For [Android] only.
   void onDetach() {}
 ```
 

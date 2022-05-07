@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:pmvvm/pmvvm.dart';
 
+import 'mixens/index.dart';
 import 'mvvm_builder.props.dart';
 
 /// The MVVM builder widget.
@@ -12,26 +13,22 @@ class MVVM<T extends ViewModel> extends StatefulWidget {
     required Widget Function() view,
     required T viewModel,
     bool disposeVM = true,
-    bool initOnce = false,
   })  : props = MVVMProps(
           view: view,
           viewModel: viewModel,
           disposeVM: disposeVM,
-          initOnce: initOnce,
         ),
         super(key: key);
 
   MVVM.builder({
     Key? key,
-    required Widget Function(BuildContext, T) viewBuilder,
+    required Widget Function(BuildContext context, T vm) viewBuilder,
     required T viewModel,
     bool disposeVM = true,
-    bool initOnce = false,
   })  : props = MVVMBuilderProps(
           viewBuilder: viewBuilder,
           viewModel: viewModel,
           disposeVM: disposeVM,
-          initOnce: initOnce,
         ),
         super(key: key);
 
@@ -39,9 +36,8 @@ class MVVM<T extends ViewModel> extends StatefulWidget {
   _MVVMState<T> createState() => _MVVMState<T>();
 }
 
-class _MVVMState<T extends ViewModel> extends State<MVVM<T>> with WidgetsBindingObserver {
+class _MVVMState<T extends ViewModel> extends State<MVVM<T>> with WidgetsBindingObserver, DidInitStateMixin<MVVM<T>> {
   late T _vm;
-  bool _initialised = false;
 
   @override
   void initState() {
@@ -49,6 +45,13 @@ class _MVVMState<T extends ViewModel> extends State<MVVM<T>> with WidgetsBinding
     _vm = widget.props.viewModel;
 
     WidgetsBinding.instance?.addObserver(this);
+    WidgetsBinding.instance?.addPostFrameCallback((_) => _vm.onMount());
+  }
+
+  @override
+  void didInitState() {
+    _vm.context = context;
+    _vm.init();
   }
 
   @override
@@ -66,25 +69,14 @@ class _MVVMState<T extends ViewModel> extends State<MVVM<T>> with WidgetsBinding
 
   @override
   void didChangeDependencies() {
+    _vm.onDependenciesChange();
     super.didChangeDependencies();
-    if (identical(_vm, widget.props.viewModel)) {
-      _vm = widget.props.viewModel;
-    }
-
-    _vm.context = context;
-
-    if (widget.props.initOnce && !_initialised) {
-      _vm.init();
-      _initialised = true;
-    } else if (!widget.props.initOnce) {
-      _vm.init();
-    }
   }
 
   @override
   void dispose() {
     WidgetsBinding.instance?.removeObserver(this);
-    _vm.onDispose();
+    _vm.onUnmount();
     super.dispose();
   }
 

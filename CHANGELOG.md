@@ -1,3 +1,10 @@
+# 4.0.0
+
+* Replace the `onDispose` callback method of the view model by `onUnmount`
+* Add `onMount` callback in the view model
+* Remove `initOnce` parameter and make the `init` method of the view model get called only after `initState` of the MVVM widget
+* Add `onDependenciesChange` in the view model to get called when the `didChangeDependencies` of the MVVM widget gets triggered
+
 # 3.0.0
 
 * Replace the `implicitView` parameter with the `builder` factory constructor.

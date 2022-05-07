@@ -9,14 +9,9 @@ class MVVMBaseProps<T extends ViewModel> {
   /// widget tree.
   final bool disposeVM;
 
-  /// Whether the [viewModel] should be initialized once or every time the
-  /// the dependencies change.
-  final bool initOnce;
-
   MVVMBaseProps({
     required this.viewModel,
     required this.disposeVM,
-    required this.initOnce,
   });
 }
 
@@ -28,8 +23,7 @@ class MVVMProps<T extends ViewModel> extends MVVMBaseProps<T> {
     required this.view,
     required T viewModel,
     required bool disposeVM,
-    required bool initOnce,
-  }) : super(viewModel: viewModel, disposeVM: disposeVM, initOnce: initOnce);
+  }) : super(viewModel: viewModel, disposeVM: disposeVM);
 }
 
 class MVVMBuilderProps<T extends ViewModel> extends MVVMBaseProps<T> {
@@ -41,6 +35,5 @@ class MVVMBuilderProps<T extends ViewModel> extends MVVMBaseProps<T> {
     required this.viewBuilder,
     required T viewModel,
     required bool disposeVM,
-    required bool initOnce,
-  }) : super(viewModel: viewModel, disposeVM: disposeVM, initOnce: initOnce);
+  }) : super(viewModel: viewModel, disposeVM: disposeVM);
 }
