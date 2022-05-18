@@ -1,3 +1,7 @@
+# 4.0.1
+
+* Fix non null type warning of `WidgetsBinding.instance`
+
 # 4.0.0
 
 * Replace the `onDispose` callback method of the view model by `onUnmount`
