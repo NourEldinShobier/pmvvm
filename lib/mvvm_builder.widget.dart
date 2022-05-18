@@ -44,8 +44,8 @@ class _MVVMState<T extends ViewModel> extends State<MVVM<T>> with WidgetsBinding
     super.initState();
     _vm = widget.props.viewModel;
 
-    WidgetsBinding.instance?.addObserver(this);
-    WidgetsBinding.instance?.addPostFrameCallback((_) => _vm.onMount());
+    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance.addPostFrameCallback((_) => _vm.onMount());
   }
 
   @override
@@ -75,7 +75,7 @@ class _MVVMState<T extends ViewModel> extends State<MVVM<T>> with WidgetsBinding
 
   @override
   void dispose() {
-    WidgetsBinding.instance?.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
     _vm.onUnmount();
     super.dispose();
   }
